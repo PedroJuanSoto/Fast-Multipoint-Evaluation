@@ -1,20 +1,7 @@
 from math import ceil, log
 from numpy.fft import fft, ifft
 import numpy as np
-
-#FFT polynomial multiplication
-def poly_mult(p1, p2):
-	if not p1 or not p2:
-		return []
-	deg1 = len(p1) - 1 
-	deg2 = len(p2) - 1
-	d = deg1 + deg2 + 1
-	def poly_extend(p, d):
-		return [0] * (d-len(p)) + list(p)
-	U = fft(poly_extend(p1, d)[::-1])
-	V = fft(poly_extend(p2, d)[::-1])
-	res = list(ifft(U*V).real)
-	return [round(x,10) for x in res[::-1]]
+from poly_arith import poly_mult, poly_div
 	
 #Going up the product tree in the multipoint evaluation algorithm 
 def create_tree(r):
@@ -32,10 +19,6 @@ def create_tree(r):
 		j = j*2
 		i = i+1
 	return tree 
-	
-def poly_div(p, q):
-	#return np.poly1d(poly_divmod(list(p), list(q))[1])
-	return np.polydiv(p, q)[1]
 		
 #Going down the product tree 
 def mult_eval(poly, points):
@@ -72,4 +55,3 @@ def mult_eval_recurse(poly, points, tree, depth, index):
 	list2 = mult_eval_recurse(r1, points[num//2:], tree, depth + 1, 2*index+1)
 	return (list1 + list2)[:num] 
    
-
