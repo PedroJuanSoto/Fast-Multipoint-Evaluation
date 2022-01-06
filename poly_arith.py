@@ -45,18 +45,21 @@ def poly_stand_form(p):
 
 def poly_div(p, q):
 	#return np.poly1d(poly_divmod(list(p), list(q))[1])
-	return np.polydiv(p, q)[1]
+	#return np.polydiv(p, q)[1]
+	a = poly_deg(p)
+	b = poly_deg(q)
+	if a < b:
+		return [0], p
+	m = a-b
+	y = newt_raph_inv(poly_rev(q,b),m+1)
+	x = poly_rev(p,a)
+	f = mod_by_x_to_the_i(poly_mult(x,y),m+1)	
+	g = poly_rev(f,m)
+	r = poly_sub(p,poly_mult(g,q))	
+	return g,r
 
-def rev(p, k):
-	l, r = p
-	rev_p = [deepcopy(r),deepcopy(l)] 
-	rev_p[0].reverse()
-	rev_p[1].reverse()
-	for i in range(k):
-		rev_p[0].append(rev_p[1].pop(0))
-	return rev_p
 
-def newt_inv(p,i):
+def newt_raph_inv(p,i):
 	g = [1]
 	r = 1
 	while 2**r < i:
@@ -71,5 +74,36 @@ def newt_inv(p,i):
 def mod_by_x_to_the_i(p,i):
 	return p[-i:]	
 	
-#print(mod_by_x_to_the_i(poly_mult([1,2,1],newt_inv([1,2,1],3)),3))
+def rev(p, k):
+	l, r = p
+	rev_p = [deepcopy(r),deepcopy(l)] 
+	rev_p[0].reverse()
+	rev_p[1].reverse()
+	print(rev_p[0],rev_p[1],k)
+	for i in range(k):
+		rev_p[0].append(rev_p[1].pop(0))
+	return rev_p
+
+def poly_to_rat(p):
+	return [[1],poly_stand_form(deepcopy(p))] 
+
+def rat_to_poly(f):
+	return deepcopy(f[1]) 
+
+def poly_rev(p,k):
+	#return rat_to_poly(rev(poly_to_rat(p),k))
+	if poly_deg(p) == k:
+		rev_p = deepcopy(p) 
+		rev_p.reverse()
+		return rev_p
+
+def poly_deg(p):
+	n = len(p)
+	for i in range(n):
+		if p[n-1-i] != 0:
+			return n-1-i
+	return 0
+
+print(poly_div([1,2,1],[1,1]))
+#print(mod_by_x_to_the_i(poly_mult([1,2,1],newt_raph_inv([1,2,1],3)),3))
 #print(rev([[1,2,3],[4,5,6]], 1))
