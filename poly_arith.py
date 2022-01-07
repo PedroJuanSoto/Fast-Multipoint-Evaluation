@@ -13,7 +13,7 @@ def poly_mult(p1, p2):
 	U = fft(poly_make_deg_eq(p1, d)[::-1])
 	V = fft(poly_make_deg_eq(p2, d)[::-1])
 	res = list(ifft(U*V).real)
-	return [round(x,10) for x in res[::-1]]
+	return [round(x,14) for x in res[::-1]]
 
 #multiply a polynomial by a scalar
 def poly_scalar_mult(a, p):
@@ -43,9 +43,8 @@ def poly_stand_form(p):
 	else:
 		return []	
 
+#fast polynomial division using newton raphson method
 def poly_div(p, q):
-	#return np.poly1d(poly_divmod(list(p), list(q))[1])
-	#return np.polydiv(p, q)[1]
 	a = poly_deg(p)
 	b = poly_deg(q)
 	if a < b:
@@ -58,7 +57,7 @@ def poly_div(p, q):
 	r = poly_sub(p,poly_mult(g,q))	
 	return g,r
 
-
+#newton raphson method for finding f^-1 mod x^i
 def newt_raph_inv(p,i):
 	g = [1]
 	r = 1
@@ -71,32 +70,20 @@ def newt_raph_inv(p,i):
 		g = mod_by_x_to_the_i(poly_sub(l,m),2**j)
 	return mod_by_x_to_the_i(g, i)
 
+#returns p mod x^i for a polynomial p
 def mod_by_x_to_the_i(p,i):
 	return p[-i:]	
-	
-def rev(p, k):
-	l, r = p
-	rev_p = [deepcopy(r),deepcopy(l)] 
-	rev_p[0].reverse()
-	rev_p[1].reverse()
-	print(rev_p[0],rev_p[1],k)
-	for i in range(k):
-		rev_p[0].append(rev_p[1].pop(0))
-	return rev_p
 
-def poly_to_rat(p):
-	return [[1],poly_stand_form(deepcopy(p))] 
-
-def rat_to_poly(f):
-	return deepcopy(f[1]) 
-
+#revereses the coefficients of a polynomial
 def poly_rev(p,k):
 	#return rat_to_poly(rev(poly_to_rat(p),k))
-	if poly_deg(p) == k:
+	if len(p) == k:
 		rev_p = deepcopy(p) 
 		rev_p.reverse()
 		return rev_p
+	return poly_rev(poly_stand_form(p),k)
 
+#returns the degree of a polynomial
 def poly_deg(p):
 	n = len(p)
 	for i in range(n):
@@ -104,6 +91,3 @@ def poly_deg(p):
 			return n-1-i
 	return 0
 
-print(poly_div([1,2,1],[1,1]))
-#print(mod_by_x_to_the_i(poly_mult([1,2,1],newt_raph_inv([1,2,1],3)),3))
-#print(rev([[1,2,3],[4,5,6]], 1))
