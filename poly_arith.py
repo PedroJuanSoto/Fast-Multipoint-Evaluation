@@ -76,12 +76,9 @@ def mod_by_x_to_the_i(p,i):
 
 #revereses the coefficients of a polynomial
 def poly_rev(p,k):
-	#return rat_to_poly(rev(poly_to_rat(p),k))
-	if len(p) == k:
-		rev_p = deepcopy(p) 
-		rev_p.reverse()
-		return rev_p
-	return poly_rev(poly_stand_form(p),k)
+	rev_p = deepcopy(p) 
+	rev_p.reverse()
+	return rev_p
 
 #returns the degree of a polynomial
 def poly_deg(p):
